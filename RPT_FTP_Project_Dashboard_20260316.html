@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FTP System Project — Executive Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
+    <style>
+        :root {
+            --bg-primary: #f0f2f5;
+            --bg-card: #ffffff;
+            --bg-header: #0c1f3f;
+            --bg-nav: #162d50;
+            --text-primary: #1a1a2e;
+            --text-secondary: #6c757d;
+            --text-on-dark: #ffffff;
+            --accent-blue: #2563eb;
+            --accent-green: #16a34a;
+            --accent-orange: #ea580c;
+            --accent-red: #dc2626;
+            --accent-purple: #7c3aed;
+            --accent-teal: #0d9488;
+            --positive: #16a34a;
+            --negative: #dc2626;
+            --warning: #d97706;
+            --gap: 16px;
+            --radius: 10px;
+            --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px rgba(0,0,0,0.07), 0 2px 4px rgba(0,0,0,0.06);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        /* ===== HEADER ===== */
+        .top-header {
+            background: linear-gradient(135deg, var(--bg-header) 0%, #1e3a5f 100%);
+            color: var(--text-on-dark);
+            padding: 24px 32px 16px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
+        .header-title { font-size: 22px; font-weight: 700; letter-spacing: -0.3px; }
+        .header-subtitle { font-size: 13px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+        .header-badge {
+            display: inline-flex; align-items: center; gap: 6px;
+            background: rgba(37,99,235,0.3); border: 1px solid rgba(37,99,235,0.5);
+            padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 600;
+        }
+        .header-badge .dot { width: 8px; height: 8px; border-radius: 50%; background: #60a5fa; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* ===== NAVIGATION ===== */
+        .nav-bar {
+            display: flex; gap: 4px; margin-top: 16px; flex-wrap: wrap;
+        }
+        .nav-btn {
+            padding: 8px 18px; border: none; border-radius: 6px 6px 0 0;
+            background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7);
+            font-size: 13px; font-weight: 600; cursor: pointer;
+            transition: all 0.2s; letter-spacing: 0.3px;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+        .nav-btn.active { background: var(--bg-primary); color: var(--text-primary); }
+
+        /* ===== MAIN LAYOUT ===== */
+        .dashboard { max-width: 1440px; margin: 0 auto; padding: 20px 24px 40px; }
+        .section { display: none; animation: fadeIn 0.3s ease; }
+        .section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ===== KPI ROW ===== */
+        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--gap); margin-bottom: 20px; }
+        .kpi-card {
+            background: var(--bg-card); border-radius: var(--radius); padding: 20px 22px;
+            box-shadow: var(--shadow); border-left: 4px solid var(--accent-blue);
+            transition: transform 0.15s, box-shadow 0.15s; cursor: default;
+        }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+        .kpi-card.green { border-left-color: var(--accent-green); }
+        .kpi-card.orange { border-left-color: var(--accent-orange); }
+        .kpi-card.red { border-left-color: var(--accent-red); }
+        .kpi-card.purple { border-left-color: var(--accent-purple); }
+        .kpi-card.teal { border-left-color: var(--accent-teal); }
+        .kpi-label { font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.8px; font-weight: 600; }
+        .kpi-value { font-size: 30px; font-weight: 800; margin: 4px 0 2px; }
+        .kpi-sub { font-size: 12px; color: var(--text-secondary); }
+
+        /* ===== CARDS / GRID ===== */
+        .grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: var(--gap); margin-bottom: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--gap); margin-bottom: 20px; }
+        .card {
+            background: var(--bg-card); border-radius: var(--radius); padding: 22px 24px;
+            box-shadow: var(--shadow);
+        }
+        .card-title { font-size: 15px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .card-title .icon { font-size: 18px; }
+        .card.full-width { grid-column: 1 / -1; }
+
+        /* ===== TIMELINE ===== */
+        .timeline-container { overflow-x: auto; padding: 10px 0; }
+        .timeline-track {
+            display: flex; align-items: stretch; min-width: 900px;
+            position: relative; padding: 30px 0 10px;
+        }
+        .timeline-phase {
+            flex: 1; text-align: center; position: relative; padding: 0 4px;
+        }
+        .timeline-bar {
+            height: 12px; border-radius: 6px; margin: 0 2px;
+            position: relative; cursor: pointer;
+            transition: transform 0.15s;
+        }
+        .timeline-bar:hover { transform: scaleY(1.6); }
+        .timeline-bar.done { background: linear-gradient(90deg, #16a34a, #22c55e); }
+        .timeline-bar.active { background: linear-gradient(90deg, #2563eb, #60a5fa); animation: barPulse 2s infinite; }
+        .timeline-bar.upcoming { background: #e2e8f0; }
+        @keyframes barPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.7; } }
+        .timeline-label { font-size: 11px; font-weight: 700; margin-top: 8px; color: var(--text-primary); }
+        .timeline-date { font-size: 10px; color: var(--text-secondary); margin-top: 2px; }
+        .timeline-milestone {
+            position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+            font-size: 10px; font-weight: 700; color: var(--accent-blue);
+            background: #eff6ff; padding: 2px 8px; border-radius: 10px;
+            white-space: nowrap;
+        }
+
+        /* ===== PROGRESS BAR ===== */
+        .progress-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .progress-label { min-width: 140px; font-size: 13px; font-weight: 600; }
+        .progress-track { flex: 1; height: 22px; background: #f1f5f9; border-radius: 11px; overflow: hidden; position: relative; }
+        .progress-fill {
+            height: 100%; border-radius: 11px; display: flex; align-items: center;
+            justify-content: flex-end; padding-right: 8px; font-size: 11px; font-weight: 700;
+            color: #fff; transition: width 0.8s ease;
+        }
+        .progress-fill.blue { background: linear-gradient(90deg, #2563eb, #3b82f6); }
+        .progress-fill.green { background: linear-gradient(90deg, #16a34a, #22c55e); }
+        .progress-fill.orange { background: linear-gradient(90deg, #ea580c, #f97316); }
+        .progress-fill.red { background: linear-gradient(90deg, #dc2626, #ef4444); }
+        .progress-fill.purple { background: linear-gradient(90deg, #7c3aed, #8b5cf6); }
+        .progress-deadline { min-width: 90px; font-size: 11px; color: var(--text-secondary); text-align: right; }
+
+        /* ===== TABLE ===== */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .data-table thead th {
+            text-align: left; padding: 10px 12px; border-bottom: 2px solid #e2e8f0;
+            color: var(--text-secondary); font-weight: 700; font-size: 11px;
+            text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap;
+        }
+        .data-table tbody td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; }
+        .data-table tbody tr:hover { background: #f8fafc; }
+        .data-table tbody tr:last-child td { border-bottom: none; }
+
+        /* ===== STATUS BADGES ===== */
+        .badge {
+            display: inline-block; padding: 3px 10px; border-radius: 12px;
+            font-size: 11px; font-weight: 700; letter-spacing: 0.3px;
+        }
+        .badge.done { background: #dcfce7; color: #166534; }
+        .badge.in-progress { background: #dbeafe; color: #1e40af; }
+        .badge.blocked { background: #fee2e2; color: #991b1b; }
+        .badge.pending { background: #fef3c7; color: #92400e; }
+        .badge.critical { background: #fecaca; color: #991b1b; }
+        .badge.high { background: #fed7aa; color: #9a3412; }
+        .badge.medium { background: #fef08a; color: #854d0e; }
+
+        /* ===== ISSUE CARD ===== */
+        .issue-card {
+            border-left: 4px solid var(--accent-red); background: #fff;
+            border-radius: 8px; padding: 14px 18px; margin-bottom: 12px;
+            box-shadow: var(--shadow); cursor: pointer; transition: all 0.15s;
+        }
+        .issue-card:hover { box-shadow: var(--shadow-md); transform: translateX(4px); }
+        .issue-card.warning { border-left-color: var(--warning); }
+        .issue-card.info { border-left-color: var(--accent-blue); }
+        .issue-card .issue-title { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+        .issue-card .issue-desc { font-size: 12px; color: var(--text-secondary); line-height: 1.5; }
+        .issue-card .issue-meta { font-size: 11px; color: var(--text-secondary); margin-top: 6px; display: flex; gap: 12px; }
+
+        /* ===== DETAIL PANEL ===== */
+        .detail-panel {
+            display: none; background: var(--bg-card); border-radius: var(--radius);
+            padding: 24px; box-shadow: var(--shadow-md); margin-bottom: 20px;
+            border: 2px solid var(--accent-blue); animation: fadeIn 0.3s;
+        }
+        .detail-panel.show { display: block; }
+        .detail-close {
+            float: right; background: #f1f5f9; border: none; border-radius: 6px;
+            padding: 4px 12px; cursor: pointer; font-size: 13px; font-weight: 600;
+        }
+        .detail-close:hover { background: #e2e8f0; }
+
+        /* ===== PROPOSAL CARD ===== */
+        .proposal-card {
+            background: linear-gradient(135deg, #eff6ff, #f0fdf4);
+            border: 1px solid #bfdbfe; border-radius: var(--radius);
+            padding: 18px 22px; margin-bottom: 12px;
+        }
+        .proposal-card .proposal-title { font-size: 14px; font-weight: 700; color: var(--accent-blue); margin-bottom: 6px; }
+        .proposal-card .proposal-body { font-size: 13px; color: var(--text-primary); }
+
+        /* ===== CHART ===== */
+        .chart-wrap { position: relative; height: 280px; }
+        .chart-wrap canvas { max-height: 280px; }
+
+        /* ===== COLLAPSIBLE ===== */
+        .collapsible-header {
+            display: flex; justify-content: space-between; align-items: center;
+            cursor: pointer; padding: 10px 0; border-bottom: 1px solid #f1f5f9;
+        }
+        .collapsible-header:hover { color: var(--accent-blue); }
+        .collapsible-header .arrow { transition: transform 0.2s; font-size: 12px; }
+        .collapsible-header.open .arrow { transform: rotate(90deg); }
+        .collapsible-body { display: none; padding: 12px 0; animation: fadeIn 0.2s; }
+        .collapsible-body.open { display: block; }
+
+        /* ===== PRINT ===== */
+        @media print {
+            .top-header { position: relative; }
+            .nav-bar { display: none; }
+            .section { display: block !important; page-break-before: always; }
+            .section:first-child { page-break-before: auto; }
+        }
+
+        /* ===== ANCHOR LINK STYLE ===== */
+        .link-btn {
+            display: inline-block; padding: 4px 12px; background: #eff6ff;
+            color: var(--accent-blue); border-radius: 6px; font-size: 12px;
+            font-weight: 600; text-decoration: none; cursor: pointer;
+            transition: all 0.15s; border: 1px solid #bfdbfe;
+        }
+        .link-btn:hover { background: #dbeafe; }
+
+        .section-divider {
+            border: none; height: 1px; background: linear-gradient(90deg, transparent, #cbd5e1, transparent);
+            margin: 24px 0;
+        }
+
+        /* Tooltip */
+        .tooltip-wrap { position: relative; display: inline-block; }
+        .tooltip-wrap .tooltip-text {
+            visibility: hidden; opacity: 0; background: #1e293b; color: #fff;
+            font-size: 12px; padding: 6px 10px; border-radius: 6px;
+            position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+            white-space: nowrap; z-index: 10; transition: opacity 0.2s;
+        }
+        .tooltip-wrap:hover .tooltip-text { visibility: visible; opacity: 1; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+    </style>
+</head>
+<body>
+
+<!-- ================ HEADER ================ -->
+<div class="top-header">
+    <div class="header-top">
+        <div>
+            <div class="header-title">FTP System Project — Executive Dashboard</div>
+            <div class="header-subtitle">Trung tâm ALM &bull; Cập nhật: 16/03/2026 &bull; Dự án xây dựng Hệ thống Fund Transfer Pricing</div>
+        </div>
+        <div class="header-badge">
+            <span class="dot"></span>
+            Đang triển khai — Phase 1 & 2
+        </div>
+    </div>
+    <nav class="nav-bar">
+        <button class="nav-btn active" onclick="showSection('overview')">Tổng quan</button>
+        <button class="nav-btn" onclick="showSection('methodology')">Phương pháp luận</button>
+        <button class="nav-btn" onclick="showSection('tool')">Tool Excel MVP</button>
+        <button class="nav-btn" onclick="showSection('brd')">BRD</button>
+        <button class="nav-btn" onclick="showSection('data')">Dữ liệu & Hệ thống</button>
+        <button class="nav-btn" onclick="showSection('issues')">Khó khăn & Đề xuất</button>
+    </nav>
+</div>
+
+<div class="dashboard">
+
+<!-- ============================================================ -->
+<!-- SECTION 1: TỔNG QUAN -->
+<!-- ============================================================ -->
+<div id="section-overview" class="section active">
+
+     <!-- Timeline -->
+    <div class="card full-width" style="margin-bottom:20px;">
+        <div class="card-title"><span class="icon">&#128197;</span> Lộ trình dự án — 6 Giai đoạn</div>
+        <div class="timeline-container">
+            <div class="timeline-track">
+                <div class="timeline-phase">
+                    <div class="timeline-milestone">Đang thực hiện</div>
+                    <div class="timeline-bar active" onclick="showSection('data')" title="Click xem chi tiết"></div>
+                    <div class="timeline-label">GĐ 1: Rà soát dữ liệu</div>
+                    <div class="timeline-date">T1 → T4/2026</div>
+                </div>
+                <div class="timeline-phase">
+                    <div class="timeline-milestone" style="color:var(--accent-green)">DL: 30/04</div>
+                    <div class="timeline-bar active" onclick="showSection('methodology')" title="Click xem chi tiết"></div>
+                    <div class="timeline-label">GĐ 2: Phương pháp luận</div>
+                    <div class="timeline-date">T2 → 30/04/2026</div>
+                </div>
+                <div class="timeline-phase">
+                    <div class="timeline-milestone" style="color:var(--accent-orange)">DL: 30/05</div>
+                    <div class="timeline-bar upcoming" onclick="showSection('brd')" title="Click xem chi tiết" style="background:linear-gradient(90deg,#dbeafe 30%,#e2e8f0 30%);"></div>
+                    <div class="timeline-label">GĐ 3: BRD</div>
+                    <div class="timeline-date">T3 → 30/05/2026</div>
+                </div>
+                <div class="timeline-phase">
+                    <div class="timeline-milestone" style="color:var(--accent-red); font-weight:800;">MVP GATE: 30/06</div>
+                    <div class="timeline-bar active" onclick="showSection('tool')" title="Click xem chi tiết"></div>
+                    <div class="timeline-label">GĐ 4: Tool Excel MVP</div>
+                    <div class="timeline-date">T3 → 30/06/2026</div>
+                </div>
+                <div class="timeline-phase">
+                    <div class="timeline-bar upcoming"></div>
+                    <div class="timeline-label">GĐ 5: IT Build & UAT</div>
+                    <div class="timeline-date">T7 → T10/2026</div>
+                </div>
+                <div class="timeline-phase">
+                    <div class="timeline-milestone" style="color:var(--accent-green)">Go-Live: 30/11</div>
+                    <div class="timeline-bar upcoming"></div>
+                    <div class="timeline-label">GĐ 6: Go-Live</div>
+                    <div class="timeline-date">T10 → 30/11/2026</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- KPI Cards -->
+    <div class="kpi-row">
+        <div class="kpi-card green">
+            <div class="kpi-label">Tiến độ tổng thể</div>
+            <div class="kpi-value" style="color:var(--accent-green)">32%</div>
+            <div class="kpi-sub">8.5 / 28 tuần đã thực hiện</div>
+        </div>
+        <div class="kpi-card orange">
+            <div class="kpi-label">Deadline Tool Excel</div>
+            <div class="kpi-value" style="color:var(--accent-orange); font-size:24px;">30/06/2026</div>
+            <div class="kpi-sub">Còn ~15 tuần</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Go-Live Hệ thống</div>
+            <div class="kpi-value" style="font-size:24px;">30/11/2026</div>
+            <div class="kpi-sub">Còn ~37 tuần</div>
+        </div>
+        <div class="kpi-card red">
+            <div class="kpi-label">Vấn đề cần xử lý</div>
+            <div class="kpi-value" style="color:var(--accent-red)">8</div>
+            <div class="kpi-sub">3 Critical &bull; 3 High &bull; 2 Medium</div>
+        </div>
+        <div class="kpi-card purple">
+            <div class="kpi-label">Giao phẩm hoàn thành</div>
+            <div class="kpi-value" style="color:var(--accent-purple)">14/52</div>
+            <div class="kpi-sub">27% deliverables</div>
+        </div>
+    </div>
+
+   
+
+    <!-- 3 Priority Areas -->
+    <div class="card full-width" style="margin-bottom:20px;">
+        <div class="card-title"><span class="icon">&#9733;</span> 3 Cấu phần ưu tiên xử lý trước</div>
+        <div class="grid-3" style="margin-bottom:0;">
+            <div style="background:linear-gradient(135deg,#eff6ff,#f8fafc); border:2px solid #bfdbfe; border-radius:10px; padding:20px; cursor:pointer;" onclick="showSection('methodology')">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div style="font-size:14px;font-weight:800;color:var(--accent-blue);">1. Phương pháp luận FTP</div>
+                    <span class="badge in-progress">Đang thực hiện</span>
+                </div>
+                <div style="margin:12px 0;">
+                    <div class="progress-track"><div class="progress-fill blue" style="width:70%">70%</div></div>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);">
+                    Deadline: <strong>30/04/2026</strong><br>
+                    9/19 nội dung hoàn thành &bull; 7 cần bổ sung &bull; 3 roadmap<br>
+                    <span style="color:var(--accent-blue);font-weight:600;margin-top:4px;display:inline-block;">Click xem chi tiết &#8594;</span>
+                </div>
+            </div>
+            <div style="background:linear-gradient(135deg,#fef3c7,#fffbeb); border:2px solid #fcd34d; border-radius:10px; padding:20px; cursor:pointer;" onclick="showSection('tool')">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div style="font-size:14px;font-weight:800;color:var(--warning);">2. Tool Excel MVP</div>
+                    <span class="badge in-progress">Đang thực hiện</span>
+                </div>
+                <div style="margin:12px 0;">
+                    <div class="progress-track"><div class="progress-fill orange" style="width:45%">45%</div></div>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);">
+                    Deadline: <strong>30/06/2026</strong><br>
+                    7/11 màn hình thiết kế xong &bull; 3 báo cáo chính &bull; 5-7 báo cáo SP con<br>
+                    <span style="color:var(--warning);font-weight:600;margin-top:4px;display:inline-block;">Click xem chi tiết &#8594;</span>
+                </div>
+            </div>
+            <div style="background:linear-gradient(135deg,#fce7f3,#fdf2f8); border:2px solid #f9a8d4; border-radius:10px; padding:20px; cursor:pointer;" onclick="showSection('brd')">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div style="font-size:14px;font-weight:800;color:#be185d;">3. BRD (Mô tả kỹ thuật)</div>
+                    <span class="badge pending">Chờ input</span>
+                </div>
+                <div style="margin:12px 0;">
+                    <div class="progress-track"><div class="progress-fill purple" style="width:30%">30%</div></div>
+                </div>
+                <div style="font-size:12px;color:var(--text-secondary);">
+                    Deadline: <strong>30/05/2026</strong><br>
+                    Funding: 60% &bull; Lending: 15% &bull; Chờ PPL & dữ liệu<br>
+                    <span style="color:#be185d;font-weight:600;margin-top:4px;display:inline-block;">Click xem chi tiết &#8594;</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Progress Overview Chart -->
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title"><span class="icon">&#128200;</span> Tiến độ theo cấu phần</div>
+            <div class="chart-wrap"><canvas id="chartOverallProgress"></canvas></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><span class="icon">&#128202;</span> Giao phẩm theo trạng thái</div>
+            <div class="chart-wrap"><canvas id="chartDeliverables"></canvas></div>
+        </div>
+    </div>
+
+    <!-- Adjusted Project Scope Table -->
+    <div class="card full-width">
+        <div class="card-title"><span class="icon">&#128203;</span> Phạm vi & Giao phẩm điều chỉnh (Deadline: 30/11/2026)</div>
+        <div style="overflow-x:auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Giai đoạn</th>
+                        <th>Nội dung</th>
+                        <th>Thời gian</th>
+                        <th>Deadline</th>
+                        <th>Giao phẩm chính</th>
+                        <th>Trạng thái</th>
+                        <th>% Tiến độ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>GĐ 1</strong></td>
+                        <td>Rà soát & chuẩn hóa dữ liệu</td>
+                        <td>T1 → T4/2026</td>
+                        <td>30/04/2026</td>
+                        <td>Data Dictionary, Data Quality Report (CMS+LMS), Consolidated Field Map, Gap Analysis</td>
+                        <td><span class="badge in-progress">Đang TH</span></td>
+                        <td>55%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GĐ 2</strong></td>
+                        <td>Phương pháp luận FTP</td>
+                        <td>T2 → T4/2026</td>
+                        <td><strong style="color:var(--accent-red)">30/04/2026</strong></td>
+                        <td>FTP Methodology v1.0, FTP Curve Design, COF Allocation Model, ALCO Approval Document</td>
+                        <td><span class="badge in-progress">Đang TH</span></td>
+                        <td>70%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GĐ 3</strong></td>
+                        <td>BRD — Mô tả kỹ thuật</td>
+                        <td>T3 → T5/2026</td>
+                        <td><strong style="color:var(--accent-red)">30/05/2026</strong></td>
+                        <td>BRD Funding Module, BRD Lending Module, Screen Specs, Data Flow Diagrams</td>
+                        <td><span class="badge pending">Chờ input</span></td>
+                        <td>30%</td>
+                    </tr>
+                    <tr style="background:#fffbeb;">
+                        <td><strong>GĐ 4 &#9733;</strong></td>
+                        <td>Tool Excel MVP</td>
+                        <td>T3 → T6/2026</td>
+                        <td><strong style="color:var(--accent-red)">30/06/2026</strong></td>
+                        <td>FTP Calculator (rút gọn), 3 Báo cáo chính, 5-7 Báo cáo SP con, User Guide</td>
+                        <td><span class="badge in-progress">Đang TH</span></td>
+                        <td>45%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GĐ 5</strong></td>
+                        <td>IT Build — Yêu cầu hệ thống</td>
+                        <td>T7 → T10/2026</td>
+                        <td>31/10/2026</td>
+                        <td>System Requirement Doc, IT Development, Database Schema, API Specs</td>
+                        <td><span class="badge pending">Chưa bắt đầu</span></td>
+                        <td>0%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GĐ 6</strong></td>
+                        <td>UAT & Go-Live</td>
+                        <td>T10 → T11/2026</td>
+                        <td><strong style="color:var(--accent-green)">30/11/2026</strong></td>
+                        <td>UAT Test Cases, UAT Sign-off, Go-Live Checklist, Training Material</td>
+                        <td><span class="badge pending">Chưa bắt đầu</span></td>
+                        <td>0%</td>
+                    </tr>
+                    <tr>
+                        <td><strong>GĐ 7</strong></td>
+                        <td>Maintenance & Update</td>
+                        <td>T12/2026 →</td>
+                        <td>Liên tục</td>
+                        <td>Monthly Parameter Update, Quarterly Review, System Enhancement Log</td>
+                        <td><span class="badge pending">Tương lai</span></td>
+                        <td>—</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 2: PHƯƠNG PHÁP LUẬN -->
+<!-- ============================================================ -->
+<div id="section-methodology" class="section">
+    <div class="kpi-row">
+        <div class="kpi-card green">
+            <div class="kpi-label">Hoàn thành</div>
+            <div class="kpi-value" style="color:var(--accent-green)">9/19</div>
+            <div class="kpi-sub">Nội dung đã hoàn thành</div>
+        </div>
+        <div class="kpi-card orange">
+            <div class="kpi-label">Cần bổ sung</div>
+            <div class="kpi-value" style="color:var(--accent-orange)">7</div>
+            <div class="kpi-sub">Nội dung cần chỉnh sửa/bổ sung</div>
+        </div>
+        <div class="kpi-card purple">
+            <div class="kpi-label">Roadmap</div>
+            <div class="kpi-value" style="color:var(--accent-purple)">3</div>
+            <div class="kpi-sub">Nội dung cho phiên bản sau</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Deadline</div>
+            <div class="kpi-value" style="font-size:22px;">30/04/2026</div>
+            <div class="kpi-sub">Còn ~6 tuần</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title"><span class="icon">&#128200;</span> Tiến độ Phương pháp luận</div>
+            <div class="chart-wrap"><canvas id="chartPPLProgress"></canvas></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><span class="icon">&#127919;</span> Phương pháp đã xác nhận</div>
+            <div style="padding:8px 0;">
+                <div style="margin-bottom:10px;"><span class="badge done">Đã xác nhận</span> <strong>Phương pháp FTP:</strong> Pooled-rate approach</div>
+                <div style="margin-bottom:10px;"><span class="badge done">Đã xác nhận</span> <strong>Nguồn vốn:</strong> 4 lớp (Deposits, Interbank, Bonds, Equity)</div>
+                <div style="margin-bottom:10px;"><span class="badge done">Đã xác nhận</span> <strong>FTP Curve:</strong> Reverse solver cho COF curve</div>
+                <div style="margin-bottom:10px;"><span class="badge done">Đã xác nhận</span> <strong>Cấu trúc:</strong> Tách Policy Layer (ổn định) vs Parameter Tables (cập nhật hàng tháng)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PPL Detail Table -->
+    <div class="card full-width">
+        <div class="card-title"><span class="icon">&#128196;</span> Chi tiết 19 nội dung Phương pháp luận</div>
+        <div style="overflow-x:auto;">
+            <table class="data-table" id="tablePPL">
+                <thead>
+                    <tr><th>#</th><th>Nhóm nội dung</th><th>Mô tả</th><th>Trạng thái</th><th>Ghi chú</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>1</td><td>Tổng quan FTP</td><td>Mục đích, phạm vi, khung tổng thể</td><td><span class="badge done">Hoàn thành</span></td><td>Đã ALCO review</td></tr>
+                    <tr><td>2</td><td>Phân loại nguồn vốn</td><td>4 lớp: Deposits, Interbank, Bonds, Equity</td><td><span class="badge done">Hoàn thành</span></td><td>—</td></tr>
+                    <tr><td>3</td><td>FTP Curve Design</td><td>Reverse solver COF curve theo tenor</td><td><span class="badge done">Hoàn thành</span></td><td>Cần finalize tenor buckets</td></tr>
+                    <tr><td>4</td><td>COF Allocation</td><td>Phân bổ chi phí vốn cho từng sản phẩm</td><td><span class="badge done">Hoàn thành</span></td><td>—</td></tr>
+                    <tr><td>5</td><td>Tenor Mapping</td><td>22 tenor buckets từ ON đến >15Y</td><td><span class="badge done">Hoàn thành</span></td><td>Đã mapping day ranges</td></tr>
+                    <tr><td>6</td><td>Product Classification</td><td>CRC, CDL, TW, PL + sub-products</td><td><span class="badge done">Hoàn thành</span></td><td>—</td></tr>
+                    <tr><td>7</td><td>Channel Dimension</td><td>BOM_CHANNEL mapping</td><td><span class="badge done">Hoàn thành</span></td><td>5 giá trị rõ ràng</td></tr>
+                    <tr><td>8</td><td>P&L Attribution</td><td>Phân tách lợi nhuận theo dimension</td><td><span class="badge done">Hoàn thành</span></td><td>4-dimension model</td></tr>
+                    <tr><td>9</td><td>Reporting Framework</td><td>Cấu trúc báo cáo FTP</td><td><span class="badge done">Hoàn thành</span></td><td>3 báo cáo chính + SP con</td></tr>
+                    <tr><td>10</td><td>MM Pooling Decision</td><td>Quy tắc gộp Money Market</td><td><span class="badge pending">Cần quyết định</span></td><td>Chờ ALCO</td></tr>
+                    <tr><td>11</td><td>FFI Repricing Logic</td><td>Lãi suất tái định giá FFI</td><td><span class="badge pending">Cần quyết định</span></td><td>Chờ Treasury input</td></tr>
+                    <tr><td>12</td><td>TOI Target Setting</td><td>Thiết lập mục tiêu TOI</td><td><span class="badge pending">Cần quyết định</span></td><td>Chờ Ban Điều hành</td></tr>
+                    <tr><td>13</td><td>CASA Scope</td><td>Phạm vi xử lý CASA trong FTP</td><td><span class="badge pending">Cần bổ sung</span></td><td>Cần làm rõ với Funding</td></tr>
+                    <tr><td>14</td><td>Interest Rate Standardization</td><td>Chuẩn hóa đơn vị lãi suất CMS/LMS</td><td><span class="badge pending">Cần bổ sung</span></td><td>CMS: /100, LMS: decimal</td></tr>
+                    <tr><td>15</td><td>NPL Treatment</td><td>Xử lý nợ xấu trong FTP</td><td><span class="badge pending">Cần bổ sung</span></td><td>Cần DPD/NPL classification từ CMS</td></tr>
+                    <tr><td>16</td><td>Provision Integration</td><td>Tích hợp trích lập dự phòng</td><td><span class="badge pending">Cần bổ sung</span></td><td>Chờ Risk cung cấp tỷ lệ</td></tr>
+                    <tr><td>17</td><td>Floating Rate Handling</td><td>Xử lý lãi suất thả nổi</td><td><span class="badge in-progress">Roadmap v2</span></td><td>Phiên bản sau</td></tr>
+                    <tr><td>18</td><td>Prepayment Modeling</td><td>Mô hình trả trước hạn</td><td><span class="badge in-progress">Roadmap v2</span></td><td>Phiên bản sau</td></tr>
+                    <tr><td>19</td><td>Behavioral Maturity</td><td>Kỳ hạn hành vi vs hợp đồng</td><td><span class="badge in-progress">Roadmap v2</span></td><td>Phiên bản sau</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 8 Critical Decisions -->
+    <div class="card full-width">
+        <div class="card-title" style="color:var(--accent-red);"><span class="icon">&#9888;&#65039;</span> 8 Quyết định cần ALCO phê duyệt trước 30/04</div>
+        <div class="grid-2" style="margin-bottom:0;">
+            <div class="issue-card warning">
+                <div class="issue-title">1. MM Pooling Rules</div>
+                <div class="issue-desc">Quy tắc gộp Money Market — ảnh hưởng đến COF curve construction</div>
+                <div class="issue-meta"><span>Owner: Treasury</span><span>Priority: Critical</span></div>
+            </div>
+            <div class="issue-card warning">
+                <div class="issue-title">2. FFI Repricing Frequency</div>
+                <div class="issue-desc">Tần suất tái định giá Fixed-Floating Income instruments</div>
+                <div class="issue-meta"><span>Owner: Treasury</span><span>Priority: Critical</span></div>
+            </div>
+            <div class="issue-card warning">
+                <div class="issue-title">3. TOI Target Methodology</div>
+                <div class="issue-desc">Phương pháp thiết lập mục tiêu Total Operating Income</div>
+                <div class="issue-meta"><span>Owner: Ban Điều hành</span><span>Priority: High</span></div>
+            </div>
+            <div class="issue-card warning">
+                <div class="issue-title">4. CASA Scope Definition</div>
+                <div class="issue-desc">Phạm vi xử lý CASA: included in FTP hay separate treatment</div>
+                <div class="issue-meta"><span>Owner: Funding/ALM</span><span>Priority: High</span></div>
+            </div>
+            <div class="issue-card warning">
+                <div class="issue-title">5. CRC Product Boundary</div>
+                <div class="issue-desc">Xác định ranh giới CRC giữa CMS và LMS — tránh double-count</div>
+                <div class="issue-meta"><span>Owner: BIC/IT</span><span>Priority: Critical</span></div>
+            </div>
+            <div class="issue-card warning">
+                <div class="issue-title">6. Interest Rate Unit Standard</div>
+                <div class="issue-desc">Chuẩn hóa: CMS dùng /100, LMS dùng decimal — cần quy ước thống nhất</div>
+                <div class="issue-meta"><span>Owner: ALM/IT</span><span>Priority: High</span></div>
+            </div>
+            <div class="issue-card warning">
+                <div class="issue-title">7. Balance Unit Reconciliation</div>
+                <div class="issue-desc">ENR vs BALANCE_PRINCIPLE có thể khác đơn vị (VND vs VND cents)</div>
+                <div class="issue-meta"><span>Owner: BIC/IT</span><span>Priority: High</span></div>
+            </div>
+            <div class="issue-card warning">
+                <div class="issue-title">8. Provision Rate Source</div>
+                <div class="issue-desc">Xác định nguồn tỷ lệ trích lập dự phòng theo nhóm nợ</div>
+                <div class="issue-meta"><span>Owner: Risk</span><span>Priority: Medium</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 3: TOOL EXCEL MVP -->
+<!-- ============================================================ -->
+<div id="section-tool" class="section">
+    <div class="kpi-row">
+        <div class="kpi-card orange">
+            <div class="kpi-label">Màn hình thiết kế</div>
+            <div class="kpi-value" style="color:var(--accent-orange)">7/11</div>
+            <div class="kpi-sub">Screens đã thiết kế xong</div>
+        </div>
+        <div class="kpi-card green">
+            <div class="kpi-label">Báo cáo chính</div>
+            <div class="kpi-value" style="color:var(--accent-green)">3</div>
+            <div class="kpi-sub">Tổng, Tenor, Product tổng</div>
+        </div>
+        <div class="kpi-card purple">
+            <div class="kpi-label">Báo cáo SP con</div>
+            <div class="kpi-value" style="color:var(--accent-purple)">5-7</div>
+            <div class="kpi-sub">CRC, CDL, TW, PL, Banca...</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Deadline MVP</div>
+            <div class="kpi-value" style="font-size:22px;">30/06/2026</div>
+            <div class="kpi-sub">Còn ~15 tuần</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title"><span class="icon">&#128187;</span> Tiến độ từng màn hình</div>
+            <div class="chart-wrap"><canvas id="chartScreens"></canvas></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><span class="icon">&#128202;</span> Nguồn dữ liệu hệ thống</div>
+            <div class="chart-wrap"><canvas id="chartDataSources"></canvas></div>
+        </div>
+    </div>
+
+    <!-- Screen Details -->
+    <div class="card full-width">
+        <div class="card-title"><span class="icon">&#128421;</span> Danh sách 11 Màn hình Tool FTP</div>
+        <div style="overflow-x:auto;">
+            <table class="data-table">
+                <thead>
+                    <tr><th>Mã MH</th><th>Tên màn hình</th><th>Loại</th><th>Chức năng</th><th>MVP</th><th>Trạng thái</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><strong>MH1</strong></td><td>Bảng COF Input</td><td>Input</td><td>Ma trận COF 18x18 tenor, maker-checker workflow, product droplist</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
+                    <tr><td><strong>MH2</strong></td><td>Tenor COF Mapping</td><td>Config</td><td>22 FTP tenors (ON → >15Y), day ranges mapping</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
+                    <tr><td><strong>MH3</strong></td><td>Input Syndicated Loan</td><td>Input</td><td>Nhập tay khoản vay hợp vốn (15 fields)</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
+                    <tr><td><strong>MH4</strong></td><td>P&L Summary</td><td>Output</td><td>Tổng hợp P&L 4 chiều (Product/Channel/Tenor/Period)</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
+                    <tr><td><strong>MH4B</strong></td><td>P&L Tenor×Product Pivot</td><td>Output</td><td>Pivot view theo Tenor và Product</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
+                    <tr><td><strong>MH5</strong></td><td>Daily P&L Detail</td><td>Output</td><td>Chi tiết P&L hàng ngày theo product/channel</td><td><span class="badge done">MVP</span></td><td><span class="badge in-progress">Đang TH</span></td></tr>
+                    <tr><td><strong>MH6</strong></td><td>Loan Detail Transaction</td><td>Detail</td><td>29 fields chi tiết từng khoản vay + FTP calculations</td><td><span class="badge done">MVP</span></td><td><span class="badge in-progress">Đang TH</span></td></tr>
+                    <tr><td><strong>MH7</strong></td><td>GL Reconciliation</td><td>Recon</td><td>Đối chiếu balance với GL (10 fields)</td><td><span class="badge pending">Full</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
+                    <tr><td><strong>REF1</strong></td><td>Product-Channel Master</td><td>Reference</td><td>64 dòng mapping TW/CDL/PL/CRC/Banca → Channels</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
+                    <tr><td><strong>REF2</strong></td><td>FTP Rate Reference</td><td>Reference</td><td>Bảng tra FTP rate theo tenor</td><td><span class="badge pending">Full</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
+                    <tr><td><strong>REF3</strong></td><td>COF Matrix Reference</td><td>Reference</td><td>Ma trận COF theo Channel×Product×Tenor</td><td><span class="badge pending">Full</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Reports Structure -->
+    <div class="card full-width">
+        <div class="card-title"><span class="icon">&#128202;</span> Cấu trúc Báo cáo FTP</div>
+        <div class="grid-3" style="margin-bottom:0;">
+            <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:16px;">
+                <div style="font-weight:700; color:var(--accent-green); margin-bottom:8px;">BC1: Tổng hợp FTP</div>
+                <div style="font-size:12px;">
+                    <div>&#8226; Revenue by Product Line</div>
+                    <div>&#8226; COF Allocation Summary</div>
+                    <div>&#8226; Net FTP Spread</div>
+                    <div>&#8226; Period-over-Period Comparison</div>
+                </div>
+            </div>
+            <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:16px;">
+                <div style="font-weight:700; color:var(--accent-blue); margin-bottom:8px;">BC2: Theo Tenor</div>
+                <div style="font-size:12px;">
+                    <div>&#8226; P&L by Tenor Bucket (22 tenors)</div>
+                    <div>&#8226; Tenor×Product Pivot</div>
+                    <div>&#8226; Concentration Analysis</div>
+                    <div>&#8226; Maturity Gap</div>
+                </div>
+            </div>
+            <div style="background:#fef3c7; border:1px solid #fcd34d; border-radius:8px; padding:16px;">
+                <div style="font-weight:700; color:var(--warning); margin-bottom:8px;">BC3: Theo Product tổng</div>
+                <div style="font-size:12px;">
+                    <div>&#8226; Product P&L Breakdown</div>
+                    <div>&#8226; Channel Attribution</div>
+                    <div>&#8226; Sub-product Detail (5-7 SP)</div>
+                    <div>&#8226; Margin Analysis</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 4: BRD -->
+<!-- ============================================================ -->
+<div id="section-brd" class="section">
+    <div class="kpi-row">
+        <div class="kpi-card green">
+            <div class="kpi-label">Funding BRD</div>
+            <div class="kpi-value" style="color:var(--accent-green)">60%</div>
+            <div class="kpi-sub">Tương đối hoàn chỉnh</div>
+        </div>
+        <div class="kpi-card red">
+            <div class="kpi-label">Lending BRD</div>
+            <div class="kpi-value" style="color:var(--accent-red)">15%</div>
+            <div class="kpi-sub">Mới bắt đầu</div>
+        </div>
+        <div class="kpi-card orange">
+            <div class="kpi-label">Tổng BRD</div>
+            <div class="kpi-value" style="color:var(--accent-orange)">30%</div>
+            <div class="kpi-sub">Chờ PPL & Data assessment</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Deadline</div>
+            <div class="kpi-value" style="font-size:22px;">30/05/2026</div>
+            <div class="kpi-sub">Còn ~10 tuần</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title"><span class="icon">&#128200;</span> Tiến độ BRD theo Module</div>
+            <div class="chart-wrap"><canvas id="chartBRD"></canvas></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><span class="icon">&#128279;</span> Phụ thuộc (Dependencies)</div>
+            <div style="padding:8px 0;">
+                <div class="issue-card info" style="margin-bottom:10px;">
+                    <div class="issue-title">BRD Lending chờ Phương pháp luận</div>
+                    <div class="issue-desc">Lending BRD cần PPL hoàn chỉnh (đặc biệt COF curve design, tenor mapping, product classification) trước khi có thể mô tả đầy đủ logic tính toán.</div>
+                </div>
+                <div class="issue-card info" style="margin-bottom:10px;">
+                    <div class="issue-title">BRD chờ đánh giá dữ liệu</div>
+                    <div class="issue-desc">Việc mô tả data flow và transformation rules phụ thuộc vào kết quả đánh giá chất lượng dữ liệu CMS/LMS, đặc biệt các field overlap và unit standardization.</div>
+                </div>
+                <div class="issue-card info">
+                    <div class="issue-title">BRD Funding tương đối ổn định</div>
+                    <div class="issue-desc">Funding side ít phức tạp hơn về dữ liệu nguồn, chủ yếu dựa trên ALM manual input và Treasury data. Có thể finalize sớm hơn.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card full-width">
+        <div class="card-title"><span class="icon">&#128203;</span> Giao phẩm BRD chi tiết</div>
+        <table class="data-table">
+            <thead><tr><th>Module</th><th>Nội dung</th><th>% Hoàn thành</th><th>Chờ input từ</th><th>Deadline</th></tr></thead>
+            <tbody>
+                <tr><td><strong>Funding</strong></td><td>COF Matrix Input, Source Allocation, Rate Calculation</td><td><div class="progress-track" style="height:16px;"><div class="progress-fill green" style="width:60%">60%</div></div></td><td>Treasury, ALM</td><td>15/05/2026</td></tr>
+                <tr><td><strong>Lending</strong></td><td>Loan Data Flow, FTP Calc Logic, P&L Attribution</td><td><div class="progress-track" style="height:16px;"><div class="progress-fill red" style="width:15%">15%</div></div></td><td>PPL, Data Team, BIC</td><td>30/05/2026</td></tr>
+                <tr><td><strong>Screens</strong></td><td>Screen Specifications (11 screens)</td><td><div class="progress-track" style="height:16px;"><div class="progress-fill blue" style="width:65%">65%</div></div></td><td>Tool MVP team</td><td>30/05/2026</td></tr>
+                <tr><td><strong>Data Flow</strong></td><td>ETL Design, Transformation Rules, Data Dictionary</td><td><div class="progress-track" style="height:16px;"><div class="progress-fill orange" style="width:25%">25%</div></div></td><td>IT, BIC</td><td>30/05/2026</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 5: DỮ LIỆU & HỆ THỐNG -->
+<!-- ============================================================ -->
+<div id="section-data" class="section">
+    <div class="kpi-row">
+        <div class="kpi-card">
+            <div class="kpi-label">Tổng FTP Fields</div>
+            <div class="kpi-value">52</div>
+            <div class="kpi-sub">Fields cần cho hệ thống FTP</div>
+        </div>
+        <div class="kpi-card green">
+            <div class="kpi-label">Fields sẵn sàng</div>
+            <div class="kpi-value" style="color:var(--accent-green)">42</div>
+            <div class="kpi-sub">81% đã xác nhận nguồn</div>
+        </div>
+        <div class="kpi-card orange">
+            <div class="kpi-label">Cần làm rõ</div>
+            <div class="kpi-value" style="color:var(--accent-orange)">7</div>
+            <div class="kpi-sub">Fields cần clarification</div>
+        </div>
+        <div class="kpi-card red">
+            <div class="kpi-label">Thiếu / Chưa có</div>
+            <div class="kpi-value" style="color:var(--accent-red)">3</div>
+            <div class="kpi-sub">FTP Curve, COF Matrix, Provision</div>
+        </div>
+    </div>
+
+    <div class="grid-2">
+        <div class="card">
+            <div class="card-title"><span class="icon">&#128202;</span> Chất lượng dữ liệu CMS</div>
+            <div class="chart-wrap"><canvas id="chartCMSQuality"></canvas></div>
+        </div>
+        <div class="card">
+            <div class="card-title"><span class="icon">&#128202;</span> Chất lượng dữ liệu LMS</div>
+            <div class="chart-wrap"><canvas id="chartLMSQuality"></canvas></div>
+        </div>
+    </div>
+
+    <!-- CMS Details -->
+    <div class="card full-width">
+        <div class="card-title"><span class="icon">&#128451;</span> Đánh giá dữ liệu CMS (Card Management System)</div>
+        <table class="data-table">
+            <thead><tr><th>File/Bảng</th><th>Số dòng</th><th>Số cột</th><th>Tỷ lệ null trung bình</th><th>Vai trò FTP</th><th>Đánh giá</th></tr></thead>
+            <tbody>
+                <tr><td><strong>CRC_PLANS</strong></td><td>249</td><td>17</td><td>Thấp</td><td>Product/Plan classification</td><td><span class="badge done">Tốt</span></td></tr>
+                <tr><td><strong>CAS</strong></td><td>29,736</td><td>52</td><td>38 cột có null</td><td>Customer/Application master</td><td><span class="badge pending">Cần review</span></td></tr>
+                <tr><td><strong>LOAN_FULL</strong></td><td>41,929</td><td>41</td><td>10 cột có null</td><td>KEY SOURCE — Loan details</td><td><span class="badge in-progress">Chấp nhận được</span></td></tr>
+                <tr><td><strong>PLAN_HIST</strong></td><td>32,413</td><td>60</td><td>13 cột có null</td><td>Monthly plan history</td><td><span class="badge in-progress">Chấp nhận được</span></td></tr>
+                <tr><td><strong>SCHEDULE</strong></td><td>29,664</td><td>38</td><td>16 cột có null</td><td>Amortization schedule</td><td><span class="badge pending">Cần review</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Data Issues -->
+    <div class="card full-width">
+        <div class="card-title" style="color:var(--accent-red);"><span class="icon">&#9888;&#65039;</span> 10 Action Items — Dữ liệu (theo Priority)</div>
+        <table class="data-table">
+            <thead><tr><th>Priority</th><th>Action Item</th><th>Mô tả</th><th>Owner</th><th>Trạng thái</th></tr></thead>
+            <tbody>
+                <tr><td><span class="badge critical">P0</span></td><td>CRC Overlap Check</td><td>Xác nhận CRC nằm ở CMS hay LMS, tránh double-count</td><td>BIC / IT</td><td><span class="badge blocked">Blocked</span></td></tr>
+                <tr><td><span class="badge critical">P0</span></td><td>Balance Unit Validation</td><td>OUTSTANDING_BAL: VND hay VND cents? ENR vs BALANCE_PRINCIPLE</td><td>IT / Data</td><td><span class="badge blocked">Blocked</span></td></tr>
+                <tr><td><span class="badge critical">P0</span></td><td>FTP Curve Build</td><td>Xây dựng FTP curve theo tenor từ Treasury/ALM</td><td>Treasury</td><td><span class="badge pending">Chưa có</span></td></tr>
+                <tr><td><span class="badge high">P1</span></td><td>Interest Rate Standardization</td><td>CMS: INT_RATE/100, LMS: decimal format → cần quy ước thống nhất</td><td>ALM / IT</td><td><span class="badge pending">Chưa TH</span></td></tr>
+                <tr><td><span class="badge high">P1</span></td><td>Channel Mapping Table</td><td>SCHEME_ID → Tên kênh chuẩn cho CMS</td><td>MIS / Business</td><td><span class="badge pending">Chưa TH</span></td></tr>
+                <tr><td><span class="badge high">P1</span></td><td>COF Matrix Creation</td><td>Ma trận COF theo Channel×Product×Tenor</td><td>Treasury / ALM</td><td><span class="badge pending">Chưa TH</span></td></tr>
+                <tr><td><span class="badge high">P1</span></td><td>DPD/NPL for CMS</td><td>Bổ sung trường phân loại nợ DPD/NPL cho CMS</td><td>Risk / IT</td><td><span class="badge pending">Chưa TH</span></td></tr>
+                <tr><td><span class="badge medium">P2</span></td><td>EFF_RATE Validation</td><td>63.9% null, unclear format → fallback to GROSS_RATE</td><td>Data Team</td><td><span class="badge in-progress">Đang TH</span></td></tr>
+                <tr><td><span class="badge medium">P2</span></td><td>Provision Rate Table</td><td>Bảng tỷ lệ trích lập dự phòng theo Debt Group</td><td>Risk</td><td><span class="badge pending">Phase 4</span></td></tr>
+                <tr><td><span class="badge medium">P2</span></td><td>Actual Interest Validation</td><td>So sánh CALC_RATE vs INT_RATE cho consistency</td><td>Data Team</td><td><span class="badge in-progress">Đang TH</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Field Groups -->
+    <div class="card full-width">
+        <div class="card-title"><span class="icon">&#128203;</span> Phân nhóm 52 FTP Fields</div>
+        <div class="chart-wrap"><canvas id="chartFieldGroups"></canvas></div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- SECTION 6: KHÓ KHĂN & ĐỀ XUẤT -->
+<!-- ============================================================ -->
+<div id="section-issues" class="section">
+    <div class="kpi-row">
+        <div class="kpi-card red">
+            <div class="kpi-label">Critical Issues</div>
+            <div class="kpi-value" style="color:var(--accent-red)">3</div>
+            <div class="kpi-sub">Cần xử lý ngay</div>
+        </div>
+        <div class="kpi-card orange">
+            <div class="kpi-label">High Priority</div>
+            <div class="kpi-value" style="color:var(--accent-orange)">3</div>
+            <div class="kpi-sub">Cần xử lý trong tháng</div>
+        </div>
+        <div class="kpi-card">
+            <div class="kpi-label">Medium</div>
+            <div class="kpi-value">2</div>
+            <div class="kpi-sub">Có thể xử lý sau</div>
+        </div>
+        <div class="kpi-card green">
+            <div class="kpi-label">Đề xuất</div>
+            <div class="kpi-value" style="color:var(--accent-green)">5</div>
+            <div class="kpi-sub">Giải pháp đề xuất</div>
+        </div>
+    </div>
+
+    <!-- Critical Issues -->
+    <div class="card full-width" style="margin-bottom:20px;">
+        <div class="card-title" style="color:var(--accent-red);"><span class="icon">&#128680;</span> Khó khăn & Vướng mắc chính</div>
+
+        <div class="issue-card" onclick="toggleDetail('detail1')">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div class="issue-title">1. Dữ liệu phân mảnh giữa CMS và LMS</div>
+                <span class="badge critical">Critical</span>
+            </div>
+            <div class="issue-desc">Hai hệ thống CMS (thẻ tín dụng) và LMS (cho vay) lưu trữ dữ liệu với cấu trúc, đơn vị, và quy ước khác nhau. Đặc biệt nghiêm trọng: CRC product overlap, đơn vị lãi suất không thống nhất (/100 vs decimal), đơn vị balance có thể khác (VND vs VND cents).</div>
+            <div class="issue-meta"><span>Ảnh hưởng: Toàn bộ dự án</span><span>Owner: BIC/IT</span><span class="link-btn" onclick="event.stopPropagation();showSection('data')">Xem chi tiết data &#8594;</span></div>
+        </div>
+        <div class="detail-panel" id="detail1">
+            <button class="detail-close" onclick="toggleDetail('detail1')">Đóng</button>
+            <h4 style="margin-bottom:8px;">Chi tiết vấn đề phân mảnh dữ liệu</h4>
+            <p style="font-size:13px; margin-bottom:12px;">Hiện tại 2 hệ thống CMS và LMS có 10 trường dữ liệu overlap cần xử lý:</p>
+            <table class="data-table">
+                <thead><tr><th>Trường</th><th>CMS</th><th>LMS</th><th>Rủi ro</th></tr></thead>
+                <tbody>
+                    <tr><td>Product Code</td><td>SCHEME_ID</td><td>PRODUCT_CODE</td><td>CRC overlap — double-count</td></tr>
+                    <tr><td>Interest Rate</td><td>INT_RATE / 100</td><td>GROSS_RATE (decimal)</td><td>Sai tính FTP nếu không chuẩn hóa</td></tr>
+                    <tr><td>Balance</td><td>OUTSTANDING_BAL</td><td>ENR</td><td>Có thể khác đơn vị</td></tr>
+                    <tr><td>Channel</td><td>Không có trực tiếp</td><td>BOM_CHANNEL</td><td>Thiếu mapping cho CMS</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="issue-card" onclick="toggleDetail('detail2')">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div class="issue-title">2. Thu thập dữ liệu từ BIC/IT gặp khó khăn</div>
+                <span class="badge critical">Critical</span>
+            </div>
+            <div class="issue-desc">Việc yêu cầu dữ liệu và data dictionary từ BIC và IT mất nhiều thời gian, phản hồi chậm. Nhiều trường dữ liệu chưa có documentation rõ ràng. Ảnh hưởng trực tiếp đến tiến độ đánh giá dữ liệu và BRD.</div>
+            <div class="issue-meta"><span>Ảnh hưởng: GĐ 1, 3</span><span>Owner: BIC/IT</span></div>
+        </div>
+        <div class="detail-panel" id="detail2">
+            <button class="detail-close" onclick="toggleDetail('detail2')">Đóng</button>
+            <h4 style="margin-bottom:8px;">Chi tiết vấn đề thu thập dữ liệu</h4>
+            <p style="font-size:13px;">Các yêu cầu dữ liệu đã gửi nhưng chưa được phản hồi đầy đủ: Data Dictionary (CMS: 50% phản hồi, LMS: 60%), Sample Data (CMS: đã nhận, LMS: đã nhận nhưng cần bổ sung), Join Keys (chưa xác nhận), Transformation Rules (chưa có).</p>
+        </div>
+
+        <div class="issue-card" onclick="toggleDetail('detail3')">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div class="issue-title">3. COF Matrix theo tenor và từng sub_product/ sub_chanel</div>
+                <span class="badge critical">Critical</span>
+            </div>
+            <div class="issue-desc">OF Matrix (Channel×Product×Tenor) là input bắt buộc cho tính toán FTP, nhưng hiện chưa được quyền nhận/ lấy dữ liệu/ hoặc được cung cấp dữ liệu từ BIC/IT. Từ đó ảnh hưởng đến chât lượng/ tiến độ MVP.</div>
+            <div class="issue-meta"><span>Ảnh hưởng: GĐ 2, 4 (MVP)</span><span>Owner: Treasury</span></div>
+        </div>
+        <div class="detail-panel" id="detail3">
+            <button class="detail-close" onclick="toggleDetail('detail3')">Đóng</button>
+            <h4 style="margin-bottom:8px;">Chi tiết thiếu FTP Curve</h4>
+            <p style="font-size:13px;">Cần Treasury cung cấp: (1) FTP Curve theo 22 tenor buckets — dùng reverse solver approach; (2) COF Matrix 18×18 cho Tool MVP; (3) Quy tắc update frequency (monthly/quarterly).</p>
+        </div>
+
+        <div class="issue-card warning">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div class="issue-title">4. Phương pháp luận </div>
+                <span class="badge high">High</span>
+            </div>
+            <div class="issue-desc">Đang rà soát, thống nhất các nội dung quan trọng ảnh hưởng đến VOF/ COF trước khi trình Ban lãnh đạo phê duyệt, nưng gặp khó khăn trong việc thu thập dữ liệu để thống kê kỳ hạn chuẩn ở đầu Lending, từng tenor cho từng sản phẩm tín dụng. Nội dung chi tiết về MM pooling, FFI repricing, TOI targets, CASA scope, CRC boundary, rate units, balance units, provision rates cần ALCO phê duyệt trước khi finalize PPL.</div>
+            <div class="issue-meta"><span>Ảnh hưởng: GĐ 2</span><span class="link-btn" onclick="showSection('methodology')">Xem chi tiết PPL &#8594;</span></div>
+        </div>
+
+        <div class="issue-card warning">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div class="issue-title">5. BRD Lending mới 15% — phụ thuộc PPL & Data</div>
+                <span class="badge high">High</span>
+            </div>
+            <div class="issue-desc">Lending BRD cần PPL hoàn chỉnh và kết quả đánh giá dữ liệu trước khi có thể mô tả đầy đủ. Với deadline 30/05, chỉ còn ~10 tuần trong khi progress chỉ 15%.</div>
+            <div class="issue-meta"><span>Ảnh hưởng: GĐ 3</span><span class="link-btn" onclick="showSection('brd')">Xem chi tiết BRD &#8594;</span></div>
+        </div>
+
+        <div class="issue-card warning">
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <div class="issue-title">6. Thiếu nhân sự chuyên trách Data Engineering</div>
+                <span class="badge high">High</span>
+            </div>
+            <div class="issue-desc">Dự án cần người chuyên trách ETL design, data transformation, và data quality testing nhưng hiện đang thiếu. Công việc này đang do ALM team kiêm nhiệm.</div>
+            <div class="issue-meta"><span>Ảnh hưởng: GĐ 1, 3, 5</span></div>
+        </div>
+    </div>
+
+    <!-- Proposals -->
+    <div class="card full-width">
+        <div class="card-title" style="color:var(--accent-green);"><span class="icon">&#128161;</span> Đề xuất & Giải pháp</div>
+
+        <div class="proposal-card">
+            <div class="proposal-title">1. Tờ trình đề xuất thành lập Ban dự án FTP</div>
+            <div class="proposal-body">Đề xuất thành lập Ban dự án gồm các bên tham gia: ALM; IT; BIC; FIN; Khối kinh doanh và Kế toán. Mục tiêu: nâng cao hiệu quả và đo lường hiệu suất sử dụng vốn, gia tăng sự phối phối hợp và trách nhiệm giữa các phòng ban, cũng như đẩy nhanh tiến độ hoàn thành.</div>
+        </div>
+
+        <div class="proposal-card">
+            <div class="proposal-title">2. Thành lập Working Group liên phòng ban</div>
+            <div class="proposal-body">Đề xuất thành lập working group gồm ALM, Treasury, BIC, IT, Risk họp định kỳ 2 tuần/lần để xử lý nhanh các vấn đề data, phê duyệt quyết định, và unblock tiến độ. Mục tiêu: giảm thời gian chờ phản hồi từ 2-3 tuần xuống 3-5 ngày.</div>
+        </div>
+
+        <div class="proposal-card">
+            <div class="proposal-title">3. Escalate 3 P0 items lên Ban Điều hành</div>
+            <div class="proposal-body">Ba vấn đề P0 (CRC overlap, balance unit, dữ liệu liên quan FTP) cần được escalate lên Ban Điều hành để có chỉ đạo trực tiếp cho BIC/IT và Treasury. Nếu không giải quyết trước 15/04, deadline MVP 30/06 sẽ bị ảnh hưởng nghiêm trọng.</div>
+        </div>
+
+        <div class="proposal-card">
+            <div class="proposal-title">4. Fast-track PPL Approval</div>
+            <div class="proposal-body">Tờ trình Đề xuất phê duyệt những nội dung liên quan đến tham số trong phương pháp luận, hoàn thiện và trình chấp thuận trong tháng 4, thay vì chờ từng meeting thường kỳ. Tiết kiệm 4-6 tuần.</div>
+        </div>
+
+        <div class="proposal-card">
+            <div class="proposal-title">5. Bổ sung 1 Data Engineer chuyên trách</div>
+            <div class="proposal-body">Đề xuất BIC/IT cử 1 data engineer chuyên trách hỗ trợ dự án FTP trong 6 tháng (T4-T10) để xử lý: data mapping, ETL design, data quality testing, và hỗ trợ IT build phase.</div>
+        </div>
+
+        <div class="proposal-card">
+            <div class="proposal-title">6. Phương pháp Agile cho BRD Lending</div>
+            <div class="proposal-body">Thay vì chờ PPL hoàn chỉnh 100%, áp dụng phương pháp iterative: viết BRD Lending theo từng module (data ingestion → calculation → reporting), cập nhật khi có thêm PPL decisions. Mục tiêu đạt 60% BRD Lending trước 30/05 và finalize 100% trước 30/06.</div>
+        </div>
+    </div>
+
+    <!-- Risk Matrix Chart -->
+    <div class="card full-width">
+        <div class="card-title"><span class="icon">&#128202;</span> Ma trận Rủi ro theo Cấu phần</div>
+        <div class="chart-wrap"><canvas id="chartRiskMatrix"></canvas></div>
+    </div>
+</div>
+
+</div><!-- end dashboard -->
+
+<!-- ===== FOOTER ===== -->
+<div style="text-align:center; padding:16px; color:var(--text-secondary); font-size:11px; border-top:1px solid #e2e8f0;">
+    FTP System Project Dashboard &bull; Trung tâm ALM &bull; Cập nhật: 16/03/2026 &bull; Confidential
+</div>
+
+<script>
+// ===== NAVIGATION =====
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('section-' + id).classList.add('active');
+    const navMap = { overview:0, methodology:1, tool:2, brd:3, data:4, issues:5 };
+    document.querySelectorAll('.nav-btn')[navMap[id]].classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function toggleDetail(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('show');
+}
+
+// ===== COLORS =====
+const COLORS = ['#2563eb','#16a34a','#ea580c','#dc2626','#7c3aed','#0d9488','#d97706','#be185d','#4f46e5','#059669'];
+
+// ===== CHART: Overall Progress =====
+new Chart(document.getElementById('chartOverallProgress'), {
+    type: 'bar',
+    data: {
+        labels: ['Rà soát\ndữ liệu','Phương pháp\nluận','BRD','Tool\nExcel MVP','IT Build\n& UAT','Go-Live'],
+        datasets: [{
+            label: 'Tiến độ (%)',
+            data: [55, 70, 30, 45, 0, 0],
+            backgroundColor: ['#3b82f6CC','#22c55eCC','#f97316CC','#eab308CC','#94a3b8CC','#94a3b8CC'],
+            borderColor: ['#2563eb','#16a34a','#ea580c','#d97706','#64748b','#64748b'],
+            borderWidth: 2,
+            borderRadius: 6,
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: ctx => ctx.parsed.y + '%' } }
+        },
+        scales: {
+            y: { beginAtZero: true, max: 100, ticks: { callback: v => v + '%' } },
+            x: { grid: { display: false } }
+        }
+    }
+});
+
+// ===== CHART: Deliverables =====
+new Chart(document.getElementById('chartDeliverables'), {
+    type: 'doughnut',
+    data: {
+        labels: ['Hoàn thành (14)','Đang thực hiện (12)','Chờ input (8)','Chưa bắt đầu (18)'],
+        datasets: [{
+            data: [14, 12, 8, 18],
+            backgroundColor: ['#22c55eCC','#3b82f6CC','#f97316CC','#e2e8f0'],
+            borderColor: '#fff', borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, cutout: '55%',
+        plugins: {
+            legend: { position: 'right', labels: { usePointStyle: true, padding: 12, font: { size: 12 } } }
+        }
+    }
+});
+
+// ===== CHART: PPL Progress =====
+new Chart(document.getElementById('chartPPLProgress'), {
+    type: 'bar',
+    data: {
+        labels: ['Hoàn thành','Cần quyết định\nALCO','Cần bổ sung','Roadmap\n(v2.0)'],
+        datasets: [{
+            label: 'Số nội dung',
+            data: [9, 3, 4, 3],
+            backgroundColor: ['#22c55eCC','#f97316CC','#eab308CC','#8b5cf6CC'],
+            borderRadius: 6, borderWidth: 0
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+        plugins: { legend: { display: false } },
+        scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } }, y: { grid: { display: false } } }
+    }
+});
+
+// ===== CHART: Screens =====
+new Chart(document.getElementById('chartScreens'), {
+    type: 'bar',
+    data: {
+        labels: ['MH1\nCOF','MH2\nTenor','MH3\nSynloan','MH4\nP&L','MH4B\nPivot','MH5\nDaily','MH6\nDetail','MH7\nRecon','REF1\nProd','REF2\nRate','REF3\nCOF'],
+        datasets: [{
+            label: 'Tiến độ (%)',
+            data: [100,100,100,100,100,60,50,0,100,0,0],
+            backgroundColor: function() {
+                const d = [100,100,100,100,100,60,50,0,100,0,0];
+                return d.map(v => v===100?'#22c55eCC':v>0?'#3b82f6CC':'#e2e8f0');
+            }(),
+            borderRadius: 4,
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ctx.parsed.y+'%' } } },
+        scales: { y: { beginAtZero:true, max:100, ticks:{callback:v=>v+'%'} }, x:{grid:{display:false}, ticks:{font:{size:10}}} }
+    }
+});
+
+// ===== CHART: Data Sources =====
+new Chart(document.getElementById('chartDataSources'), {
+    type: 'doughnut',
+    data: {
+        labels: ['CMS (Card)','LMS (Loan)','ALM Manual','Treasury','Core/Intellect','GL','VBMA'],
+        datasets: [{
+            data: [25,30,15,10,8,7,5],
+            backgroundColor: COLORS.slice(0,7).map(c=>c+'CC'),
+            borderColor: '#fff', borderWidth: 2
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false, cutout: '50%',
+        plugins: { legend: { position:'right', labels:{usePointStyle:true, padding:10, font:{size:11}} } }
+    }
+});
+
+// ===== CHART: BRD =====
+new Chart(document.getElementById('chartBRD'), {
+    type: 'bar',
+    data: {
+        labels: ['Funding','Lending','Screens','Data Flow'],
+        datasets: [{
+            label: 'Hoàn thành (%)',
+            data: [60,15,65,25],
+            backgroundColor: ['#22c55eCC','#ef4444CC','#3b82f6CC','#f97316CC'],
+            borderRadius: 6
+        }]
+    },
+    options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend:{display:false}, tooltip:{callbacks:{label:ctx=>ctx.parsed.y+'%'}} },
+        scales: { y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}, x:{grid:{display:false}} }
+    }
+});
+
+// ===== CHART: CMS Quality =====
+new Chart(document.getElementById('chartCMSQuality'), {
+    type: 'bar',
+    data: {
+        labels: ['CRC_PLANS','CAS','LOAN_FULL','PLAN_HIST','SCHEDULE'],
+        datasets: [
+            { label:'Completeness %', data:[98,72,90,88,84], backgroundColor:'#3b82f6CC', borderRadius:4 },
+            { label:'Accuracy %', data:[95,70,85,82,78], backgroundColor:'#22c55eCC', borderRadius:4 }
+        ]
+    },
+    options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins: { legend:{position:'top',labels:{usePointStyle:true,padding:12}} },
+        scales: { y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}, x:{grid:{display:false}} }
+    }
+});
+
+// ===== CHART: LMS Quality =====
+new Chart(document.getElementById('chartLMSQuality'), {
+    type: 'bar',
+    data: {
+        labels: ['Loan Master','Payment Hist','Product Config','Channel Data','Risk Metrics'],
+        datasets: [
+            { label:'Completeness %', data:[97,95,99,92,88], backgroundColor:'#3b82f6CC', borderRadius:4 },
+            { label:'Accuracy %', data:[93,90,97,85,82], backgroundColor:'#22c55eCC', borderRadius:4 }
+        ]
+    },
+    options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins: { legend:{position:'top',labels:{usePointStyle:true,padding:12}} },
+        scales: { y:{beginAtZero:true,max:100,ticks:{callback:v=>v+'%'}}, x:{grid:{display:false}} }
+    }
+});
+
+// ===== CHART: Field Groups =====
+new Chart(document.getElementById('chartFieldGroups'), {
+    type: 'bar',
+    data: {
+        labels: ['A: Identifiers','B: Tenor','C: Balance','D: Interest Rate','E: Product','F: Channel','G: Date','H: Risk/NPL','I: Fees/Income','J: FTP Params'],
+        datasets: [
+            { label:'Sẵn sàng', data:[6,4,3,3,5,3,4,3,4,0], backgroundColor:'#22c55eCC', borderRadius:4 },
+            { label:'Cần làm rõ', data:[1,0,1,2,0,1,0,1,0,1], backgroundColor:'#f97316CC', borderRadius:4 },
+            { label:'Thiếu', data:[0,0,0,0,0,0,0,0,0,3], backgroundColor:'#ef4444CC', borderRadius:4 }
+        ]
+    },
+    options: {
+        responsive:true, maintainAspectRatio:false, indexAxis:'y',
+        plugins: { legend:{position:'top',labels:{usePointStyle:true}} },
+        scales: { x:{stacked:true,beginAtZero:true}, y:{stacked:true,grid:{display:false}} }
+    }
+});
+
+// ===== CHART: Risk Matrix =====
+new Chart(document.getElementById('chartRiskMatrix'), {
+    type: 'bar',
+    data: {
+        labels: ['Dữ liệu &\nHệ thống','Phương pháp\nluận','BRD','Tool MVP','IT Build','Go-Live'],
+        datasets: [
+            { label:'Critical', data:[3,1,0,1,0,0], backgroundColor:'#ef4444CC', borderRadius:4 },
+            { label:'High', data:[2,2,2,1,0,0], backgroundColor:'#f97316CC', borderRadius:4 },
+            { label:'Medium', data:[1,1,1,1,1,1], backgroundColor:'#eab308CC', borderRadius:4 }
+        ]
+    },
+    options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins: { legend:{position:'top',labels:{usePointStyle:true}} },
+        scales: { y:{stacked:true,beginAtZero:true,ticks:{stepSize:1}}, x:{stacked:true,grid:{display:false}} }
+    }
+});
+</script>
+</body>
+</html>
