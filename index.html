@@ -577,13 +577,13 @@
                     <tr><td>7</td><td>Channel Dimension</td><td>BOM_CHANNEL mapping</td><td><span class="badge done">Hoàn thành</span></td><td>5 giá trị rõ ràng</td></tr>
                     <tr><td>8</td><td>P&L Attribution</td><td>Phân tách lợi nhuận theo dimension</td><td><span class="badge done">Hoàn thành</span></td><td>4-dimension model</td></tr>
                     <tr><td>9</td><td>Reporting Framework</td><td>Cấu trúc báo cáo FTP</td><td><span class="badge done">Hoàn thành</span></td><td>3 báo cáo chính + SP con</td></tr>
-                    <tr><td>10</td><td>MM Pooling Decision</td><td>Quy tắc gộp Money Market</td><td><span class="badge pending">Cần quyết định</span></td><td>Chờ ALCO</td></tr>
-                    <tr><td>11</td><td>FFI Repricing Logic</td><td>Lãi suất tái định giá FFI</td><td><span class="badge pending">Cần quyết định</span></td><td>Chờ Treasury input</td></tr>
-                    <tr><td>12</td><td>TOI Target Setting</td><td>Thiết lập mục tiêu TOI</td><td><span class="badge pending">Cần quyết định</span></td><td>Chờ Ban Điều hành</td></tr>
-                    <tr><td>13</td><td>CASA Scope</td><td>Phạm vi xử lý CASA trong FTP</td><td><span class="badge pending">Cần bổ sung</span></td><td>Cần làm rõ với Funding</td></tr>
-                    <tr><td>14</td><td>Interest Rate Standardization</td><td>Chuẩn hóa đơn vị lãi suất CMS/LMS</td><td><span class="badge pending">Cần bổ sung</span></td><td>CMS: /100, LMS: decimal</td></tr>
-                    <tr><td>15</td><td>NPL Treatment</td><td>Xử lý nợ xấu trong FTP</td><td><span class="badge pending">Cần bổ sung</span></td><td>Cần DPD/NPL classification từ CMS</td></tr>
-                    <tr><td>16</td><td>Provision Integration</td><td>Tích hợp trích lập dự phòng</td><td><span class="badge pending">Cần bổ sung</span></td><td>Chờ Risk cung cấp tỷ lệ</td></tr>
+                    <tr><td>10</td><td>MM Pooling Decision</td><td>Quy tắc gộp Money Market</td><td><span class="badge done">Hoàn thành</span></td><td>Chờ ALCO</td></tr>
+                    <tr><td>11</td><td>FFI Repricing Logic</td><td>Lãi suất điều chỉnh FFI</td><td><span class="badge done">Hoàn thànhh</span></td><td>Chờ Treasury input</td></tr>
+                    <tr><td>12</td><td>BẢNG ĐO LƯỜNG</td><td>Thiết lập mục tiêu đo lường</td><td><span class="badge done">Hoàn thành</span></td><td>Chờ Ban Điều hành</td></tr>
+                    <tr><td>13</td><td>QUẢN TRỊ VÀ VẬN HÀNH</td><td>Phạm vi xử lý CASA trong FTP</td><td><span class="badge pending">Gần hoàn thiện</span></td><td>Cần làm rõ với Funding</td></tr>
+                    <tr><td>14</td><td>KIỂM SOÁT, KIỂM ĐỊNH VÀ THI HÀNH</td><td>Chuẩn hóa đơn vị lãi suất CMS/LMS</td><td><span class="badge pending">Gần hoàn thiệng</span></td><td>CMS: /100, LMS: decimal</td></tr>
+                    <tr><td>15</td><td>Phụ lục Tham số</td><td>Xử lý nợ xấu trong FTP</td><td><span class="badge pending">Gần hoàn thiện</span></td><td>Cần DPD/NPL classification từ CMS</td></tr>
+                    <tr><td>16</td><td>Phụ lục Tham số</td><td>Tích hợp trích lập dự phòng</td><td><span class="badge pending">Gần hoàn thiện</span></td><td>Chờ Risk cung cấp tỷ lệ</td></tr>
                     <tr><td>17</td><td>Floating Rate Handling</td><td>Xử lý lãi suất thả nổi</td><td><span class="badge in-progress">Roadmap v2</span></td><td>Phiên bản sau</td></tr>
                     <tr><td>18</td><td>Prepayment Modeling</td><td>Mô hình trả trước hạn</td><td><span class="badge in-progress">Roadmap v2</span></td><td>Phiên bản sau</td></tr>
                     <tr><td>19</td><td>Behavioral Maturity</td><td>Kỳ hạn hành vi vs hợp đồng</td><td><span class="badge in-progress">Roadmap v2</span></td><td>Phiên bản sau</td></tr>
@@ -594,47 +594,47 @@
 
     <!-- 8 Critical Decisions -->
     <div class="card full-width">
-        <div class="card-title" style="color:var(--accent-red);"><span class="icon">&#9888;&#65039;</span> 8 Quyết định cần ALCO phê duyệt trước 30/04</div>
+        <div class="card-title" style="color:var(--accent-red);"><span class="icon">&#9888;&#65039;</span> Nội dung cấp có thẩm quyền phê duyệt trước 30/04</div>
         <div class="grid-2" style="margin-bottom:0;">
             <div class="issue-card warning">
-                <div class="issue-title">1. MM Pooling Rules</div>
-                <div class="issue-desc">Quy tắc gộp Money Market — ảnh hưởng đến COF curve construction</div>
+                <div class="issue-title">1. Bảng lãi suất niêm yết & NIM huy động</div>
+                <div class="issue-desc">Theo kỳ hạn và sản phẩm; hiệu lực tháng T</div>
                 <div class="issue-meta"><span>Owner: Treasury</span><span>Priority: Critical</span></div>
             </div>
             <div class="issue-card warning">
-                <div class="issue-title">2. FFI Repricing Frequency</div>
-                <div class="issue-desc">Tần suất tái định giá Fixed-Floating Income instruments</div>
+                <div class="issue-title">2. Ma trận Phần bù M</div>
+                <div class="issue-desc">TLFI, FFI, MM theo kỳ hạn</div>
                 <div class="issue-meta"><span>Owner: Treasury</span><span>Priority: Critical</span></div>
             </div>
             <div class="issue-card warning">
-                <div class="issue-title">3. TOI Target Methodology</div>
-                <div class="issue-desc">Phương pháp thiết lập mục tiêu Total Operating Income</div>
+                <div class="issue-title">3. Ma trận COF (LSBV)</div>
+                <div class="issue-desc">[Contract Tenor × Repricing Period]; hiệu lực tháng T</div>
                 <div class="issue-meta"><span>Owner: Ban Điều hành</span><span>Priority: High</span></div>
             </div>
             <div class="issue-card warning">
-                <div class="issue-title">4. CASA Scope Definition</div>
-                <div class="issue-desc">Phạm vi xử lý CASA: included in FTP hay separate treatment</div>
-                <div class="issue-meta"><span>Owner: Funding/ALM</span><span>Priority: High</span></div>
+                <div class="issue-title">4. ĐCCL hiệu lực</div>
+                <div class="issue-desc">VOF và COF: nguồn/sản phẩm áp dụng, mức ±bps, thời hạn, lý do phê duyệt</div>
+                <div class="issue-meta"><span>Owner: Ban Điều hành</span><span>Priority: High</span></div>
             </div>
             <div class="issue-card warning">
-                <div class="issue-title">5. CRC Product Boundary</div>
-                <div class="issue-desc">Xác định ranh giới CRC giữa CMS và LMS — tránh double-count</div>
-                <div class="issue-meta"><span>Owner: BIC/IT</span><span>Priority: Critical</span></div>
+                <div class="issue-title">5. Bảng quy đổi kỳ hạn chuẩn</div>
+                <div class="issue-desc">Mapping kỳ hạn thực tế → kỳ hạn chuẩn</div>
+                <div class="issue-meta"><span>Owner: Treasury</span><span>Priority: Critical</span></div>
             </div>
             <div class="issue-card warning">
-                <div class="issue-title">6. Interest Rate Unit Standard</div>
-                <div class="issue-desc">Chuẩn hóa: CMS dùng /100, LMS dùng decimal — cần quy ước thống nhất</div>
+                <div class="issue-title">6. Quy trình đối chiếu NII</div>
+                <div class="issue-desc">FTP vs Kế toán; bảng đối soát tháng</div>
                 <div class="issue-meta"><span>Owner: ALM/IT</span><span>Priority: High</span></div>
             </div>
             <div class="issue-card warning">
-                <div class="issue-title">7. Balance Unit Reconciliation</div>
-                <div class="issue-desc">ENR vs BALANCE_PRINCIPLE có thể khác đơn vị (VND vs VND cents)</div>
-                <div class="issue-meta"><span>Owner: BIC/IT</span><span>Priority: High</span></div>
+                <div class="issue-title">7. Quy trình Reverse Solver COF</div>
+                <div class="issue-desc">Logic, ràng buộc RB-1 và RB-2, xử lý bất thường</div>
+                <div class="issue-meta"><span>Owner: ALM</span><span>Priority: High</span></div>
             </div>
             <div class="issue-card warning">
-                <div class="issue-title">8. Provision Rate Source</div>
-                <div class="issue-desc">Xác định nguồn tỷ lệ trích lập dự phòng theo nhóm nợ</div>
-                <div class="issue-meta"><span>Owner: Risk</span><span>Priority: Medium</span></div>
+                <div class="issue-title">8. Lưu đồ vận hành FTP tháng & Mẫu Tờ trình ALCO</div>
+                <div class="issue-desc">XFlowchart từ thu thập dữ liệu → báo cáo ALCO</div>
+                <div class="issue-meta"><span>wner: ALM</span><span>Priority: Medium</span></div>
             </div>
         </div>
     </div>
