@@ -619,30 +619,30 @@
 <div id="section-tool" class="section">
     <div class="kpi-row">
         <div class="kpi-card orange">
-            <div class="kpi-label">Màn hình thiết kế</div>
-            <div class="kpi-value" style="color:var(--accent-orange)">7/11</div>
-            <div class="kpi-sub">Screens đã thiết kế xong</div>
+            <div class="kpi-label">Tool exel Funding</div>
+            <div class="kpi-value" style="color:var(--accent-orange)">4/7</div>
+            <div class="kpi-sub">Bảng tính, báo cáo đã thiết lập công thức</div>
         </div>
         <div class="kpi-card green">
-            <div class="kpi-label">Báo cáo chính</div>
-            <div class="kpi-value" style="color:var(--accent-green)">3</div>
-            <div class="kpi-sub">Tổng, Tenor, Product tổng</div>
+            <div class="kpi-label">Tool Lending - Loan</div>
+            <div class="kpi-value" style="color:var(--accent-green)">2/7</div>
+            <div class="kpi-sub">Báo cáo, Bảng tính</div>
         </div>
         <div class="kpi-card purple">
-            <div class="kpi-label">Báo cáo SP con</div>
-            <div class="kpi-value" style="color:var(--accent-purple)">5-7</div>
-            <div class="kpi-sub">CRC, CDL, TW, PL, Banca...</div>
+            <div class="kpi-label">Tool Lending - Card</div>
+            <div class="kpi-value" style="color:var(--accent-purple)">1/7</div>
+            <div class="kpi-sub">Báo cáo, Bảng tính</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">Deadline MVP</div>
             <div class="kpi-value" style="font-size:22px;">30/06/2026</div>
-            <div class="kpi-sub">Còn ~15 tuần</div>
+            <div class="kpi-sub">Còn ~11 tuần</div>
         </div>
     </div>
 
     <div class="grid-2">
         <div class="card">
-            <div class="card-title"><span class="icon">&#128187;</span> Tiến độ từng màn hình</div>
+            <div class="card-title"><span class="icon">&#128187;</span> Tiến độ từng Bảng tính & Báo cáo</div>
             <div class="chart-wrap"><canvas id="chartScreens"></canvas></div>
         </div>
         <div class="card">
@@ -657,20 +657,24 @@
         <div style="overflow-x:auto;">
             <table class="data-table">
                 <thead>
-                    <tr><th>Mã MH</th><th>Tên màn hình</th><th>Loại</th><th>Chức năng</th><th>MVP</th><th>Trạng thái</th></tr>
+                    <tr><th>Mã MH</th><th>Tên màn hình</th><th>Loại</th><th>Chức năng</th><th>Tool</th><th>Trạng thái</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td><strong>MH1</strong></td><td>Bảng COF Input</td><td>Input</td><td>Ma trận COF 18x18 tenor, maker-checker workflow, product droplist</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
-                    <tr><td><strong>MH2</strong></td><td>Tenor COF Mapping</td><td>Config</td><td>22 FTP tenors (ON → >15Y), day ranges mapping</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
-                    <tr><td><strong>MH3</strong></td><td>Input Syndicated Loan</td><td>Input</td><td>Nhập tay khoản vay hợp vốn (15 fields)</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
-                    <tr><td><strong>MH4</strong></td><td>P&L Summary</td><td>Output</td><td>Tổng hợp P&L 4 chiều (Product/Channel/Tenor/Period)</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
-                    <tr><td><strong>MH4B</strong></td><td>P&L Tenor×Product Pivot</td><td>Output</td><td>Pivot view theo Tenor và Product</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
-                    <tr><td><strong>MH5</strong></td><td>Daily P&L Detail</td><td>Output</td><td>Chi tiết P&L hàng ngày theo product/channel</td><td><span class="badge done">MVP</span></td><td><span class="badge in-progress">Đang TH</span></td></tr>
-                    <tr><td><strong>MH6</strong></td><td>Loan Detail Transaction</td><td>Detail</td><td>29 fields chi tiết từng khoản vay + FTP calculations</td><td><span class="badge done">MVP</span></td><td><span class="badge in-progress">Đang TH</span></td></tr>
-                    <tr><td><strong>MH7</strong></td><td>GL Reconciliation</td><td>Recon</td><td>Đối chiếu balance với GL (10 fields)</td><td><span class="badge pending">Full</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
-                    <tr><td><strong>REF1</strong></td><td>Product-Channel Master</td><td>Reference</td><td>64 dòng mapping TW/CDL/PL/CRC/Banca → Channels</td><td><span class="badge done">MVP</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
-                    <tr><td><strong>REF2</strong></td><td>FTP Rate Reference</td><td>Reference</td><td>Bảng tra FTP rate theo tenor</td><td><span class="badge pending">Full</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
-                    <tr><td><strong>REF3</strong></td><td>COF Matrix Reference</td><td>Reference</td><td>Ma trận COF theo Channel×Product×Tenor</td><td><span class="badge pending">Full</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
+                    <tr><td><strong>FA1</strong></td><td>VOF_Bảng Input</td><td>Input</td><td>Tham chiếu Bảng LSMV</td><td><span class="badge done">Full</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
+                    <tr><td><strong>FA2,3,4,5</strong></td><td>VOF_Báo cáo TT1, TT2, Tất toán trước,..</td><td>Input</td><td>Chi tiết giao dịch huy động</td><td><span class="badge done">Full</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
+                    <tr><td><strong>FA6</strong></td><td>VOF_Bảng tính TT1</td><td>Output</td><td>Chi tiết P&L TT1 hàng ngày</td><td><span class="badge in-progress">Full</span></td><td><span class="badge badge in-progress">Đang TH</span></td></tr>
+                    <tr><td><strong>FA7</strong></td><td>VOF_Bảng tính TT2</td><td>Output</td><td>Chi tiết P&L TT2 hàng ngày</td><td><span class="badge in-progress">Full</span></td><td><span class="badge badge in-progress">Đang TH</span></td></tr>
+                    <tr><td><strong>FA8</strong></td><td>VOF_Dash board</td><td>Output</td><td>Báo cáo</td><td><span class="badge pending">Full</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
+                    <tr><td><strong>FB1</strong></td><td>COF_Bảng Input (Loans)</td><td>Input</td><td>Tham chiếu LSBV</td><td><span class="badge done">Full</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
+                    <tr><td><strong>FB2,3</strong></td><td>COF_Báo cáo Core Loan, Sync Loan</td><td>Input</td><td>Chi tiết giao dịch khoản vay</td><td><span class="badge in-progress">Tool</span></td><td><span class="badge in-progress">Đang TH</span></td></tr>
+                    <tr><td><strong>FB4</strong></td><td>COF_Bảng tính Core Loan</td><td>Output</td><td>Chi tiết P&L Core Loan</td><td><span class="badge pending">Tool</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
+                    <tr><td><strong>FB5</strong></td><td>COF_Bảng tính Sync Loan</td><td>Output</td><td>Chi tiết P&L Sync Loan</td><td><span class="badge pending">Tool</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
+                    <tr><td><strong>FB6</strong></td><td>COF_Bảng tính khác</td><td>Output</td><td>Chi tiết giao dịch quá hạn, cơ cấu nợ, trả trước 1 phần,..</td><td><span class="badge pending">Tool</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
+                    <tr><td><strong>FB7</strong></td><td>COF_Dash board</td><td>Output</td><td>Báo cáo</td><td><span class="badge pending">Tool</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
+                    <tr><td><strong>FC1</strong></td><td>COF_Bảng Input (Card)</td><td>Input</td><td>Tham chiếu LSBV</td><td><span class="badge done">Full</span></td><td><span class="badge done">Hoàn thành</span></td></tr>
+                    <tr><td><strong>FC2</strong></td><td>COF_Báo cáo Card</td><td>Input</td><td>Chi tiết giao dịch Card</td><td><span class="badge pending">Tool</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
+                    <tr><td><strong>FC3</strong></td><td>COF_Bảng tính Card</td><td>Output</td><td>Chi tiết P&L Card</td><td><span class="badge pending">Tool</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
+                    <tr><td><strong>FC4</strong></td><td>COF_Dash board (Card)</td><td>Output</td><td>Báo cáo</td><td><span class="badge pending">Tool</span></td><td><span class="badge pending">Chưa TH</span></td></tr>
                 </tbody>
             </table>
         </div>
@@ -678,33 +682,33 @@
 
     <!-- Reports Structure -->
     <div class="card full-width">
-        <div class="card-title"><span class="icon">&#128202;</span> Cấu trúc Báo cáo FTP</div>
+        <div class="card-title"><span class="icon">&#128202;</span> Cấu trúc Tool Excel</div>
         <div class="grid-3" style="margin-bottom:0;">
             <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:16px;">
-                <div style="font-weight:700; color:var(--accent-green); margin-bottom:8px;">BC1: Tổng hợp FTP</div>
+                <div style="font-weight:700; color:var(--accent-green); margin-bottom:8px;">Tool Excel Funding</div>
                 <div style="font-size:12px;">
-                    <div>&#8226; Revenue by Product Line</div>
-                    <div>&#8226; COF Allocation Summary</div>
-                    <div>&#8226; Net FTP Spread</div>
-                    <div>&#8226; Period-over-Period Comparison</div>
+                    <div>&#8226; P&L Lãi suất mua vốn</div>
+                    <div>&#8226; Tenor×Product Pivot</div>
+                    <div>&#8226; Dash board/div>
+                    <div>&#8226; FTP trường hợp khác: tất toán trước, điều chỉnh lãi suất</div>
                 </div>
             </div>
             <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:16px;">
-                <div style="font-weight:700; color:var(--accent-blue); margin-bottom:8px;">BC2: Theo Tenor</div>
+                <div style="font-weight:700; color:var(--accent-blue); margin-bottom:8px;">Tool Excel Lending - Loans</div>
                 <div style="font-size:12px;">
-                    <div>&#8226; P&L by Tenor Bucket (22 tenors)</div>
+                    <div>&#8226; P&L Lãi suất bán vốn (Core + Sync Loan)</div>
                     <div>&#8226; Tenor×Product Pivot</div>
-                    <div>&#8226; Concentration Analysis</div>
-                    <div>&#8226; Maturity Gap</div>
+                    <div>&#8226; Dash board</div>
+                    <div>&#8226; FTP trường hợp khác: quá hạn, cơ cấu nợ, điều chỉnh lãi suất,...</div>
                 </div>
             </div>
             <div style="background:#fef3c7; border:1px solid #fcd34d; border-radius:8px; padding:16px;">
-                <div style="font-weight:700; color:var(--warning); margin-bottom:8px;">BC3: Theo Product tổng</div>
+                <div style="font-weight:700; color:var(--warning); margin-bottom:8px;">Tool Excel Lending - Card</div>
                 <div style="font-size:12px;">
-                    <div>&#8226; Product P&L Breakdown</div>
-                    <div>&#8226; Channel Attribution</div>
-                    <div>&#8226; Sub-product Detail (5-7 SP)</div>
-                    <div>&#8226; Margin Analysis</div>
+                    <div>&#8226; P&L Lãi suất bán vốn Card</div>
+                    <div>&#8226; Tenor×Product Pivot</div>
+                    <div>&#8226; Dash board</div>
+                    <div>&#8226; FTP trường hợp khác: quá hạn, thay đổi sản phẩm, cơ cấu nợ,..</div>
                 </div>
             </div>
         </div>
@@ -1103,12 +1107,12 @@ new Chart(document.getElementById('chartPPLProgress'), {
 new Chart(document.getElementById('chartScreens'), {
     type: 'bar',
     data: {
-        labels: ['MH1\nCOF','MH2\nTenor','MH3\nSynloan','MH4\nP&L','MH4B\nPivot','MH5\nDaily','MH6\nDetail','MH7\nRecon','REF1\nProd','REF2\nRate','REF3\nCOF'],
+        labels: ['F1\nVOF\n4\nReports','F2\nVOF\nTT1','F3\nVOF\nTT2','F4\nVOF\nDashboard','F1\nCOF\n2\nReports','F2\nCOF\nCore_Loan','F3\nCOF\nSync_Loan','F4\nCOF\nDashboard',F1\nCard\n2\nReports','F2\nCOF\nCard','F3\nCard\nDashboard'],
         datasets: [{
             label: 'Tiến độ (%)',
-            data: [100,100,100,100,100,60,50,0,100,0,0],
+            data: [100,80,60,0,30,30,50,1,1,1,1],
             backgroundColor: function() {
-                const d = [100,100,100,100,100,60,50,0,100,0,0];
+                const d = [100,80,60,0,30,30,50,1,1,1,1];
                 return d.map(v => v===100?'#22c55eCC':v>0?'#3b82f6CC':'#e2e8f0');
             }(),
             borderRadius: 4,
@@ -1125,9 +1129,9 @@ new Chart(document.getElementById('chartScreens'), {
 new Chart(document.getElementById('chartDataSources'), {
     type: 'doughnut',
     data: {
-        labels: ['CMS (Card)','LMS (Loan)','ALM Manual','Treasury','Core/Intellect','GL','VBMA'],
+        labels: ['CMS (Card)','LMS (Loan)','ODS','Intellect','VBMA & Other'],
         datasets: [{
-            data: [25,30,15,10,8,7,5],
+            data: [25,30,15,25,5],
             backgroundColor: COLORS.slice(0,7).map(c=>c+'CC'),
             borderColor: '#fff', borderWidth: 2
         }]
