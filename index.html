@@ -562,32 +562,23 @@
 
     <!-- PPL Detail Table -->
     <div class="card full-width">
-        <div class="card-title"><span class="icon">&#128196;</span> Chi tiết 19 nội dung Phương pháp luận</div>
+        <div class="card-title"><span class="icon">&#128196;</span> Chi tiết 10 nội dung Phương pháp luận</div>
         <div style="overflow-x:auto;">
             <table class="data-table" id="tablePPL">
                 <thead>
                     <tr><th>#</th><th>Nhóm nội dung</th><th>Mô tả</th><th>Trạng thái</th><th>Ghi chú</th></tr>
                 </thead>
                 <tbody>
-                    <tr><td>1</td><td>Tổng quan FTP</td><td>Mục đích, phạm vi, khung tổng thể</td><td><span class="badge done">Hoàn thành</span></td><td>Đã ALCO review</td></tr>
-                    <tr><td>2</td><td>Phân loại nguồn vốn</td><td>4 lớp: Deposits, Interbank, Bonds, Equity</td><td><span class="badge done">Hoàn thành</span></td><td>—</td></tr>
-                    <tr><td>3</td><td>FTP Curve Design</td><td>Reverse solver COF curve theo tenor</td><td><span class="badge done">Hoàn thành</span></td><td>Cần finalize tenor buckets</td></tr>
-                    <tr><td>4</td><td>COF Allocation</td><td>Phân bổ chi phí vốn cho từng sản phẩm</td><td><span class="badge done">Hoàn thành</span></td><td>—</td></tr>
-                    <tr><td>5</td><td>Tenor Mapping</td><td>22 tenor buckets từ ON đến >15Y</td><td><span class="badge done">Hoàn thành</span></td><td>Đã mapping day ranges</td></tr>
-                    <tr><td>6</td><td>Product Classification</td><td>CRC, CDL, TW, PL + sub-products</td><td><span class="badge done">Hoàn thành</span></td><td>—</td></tr>
-                    <tr><td>7</td><td>Channel Dimension</td><td>BOM_CHANNEL mapping</td><td><span class="badge done">Hoàn thành</span></td><td>5 giá trị rõ ràng</td></tr>
-                    <tr><td>8</td><td>P&L Attribution</td><td>Phân tách lợi nhuận theo dimension</td><td><span class="badge done">Hoàn thành</span></td><td>4-dimension model</td></tr>
-                    <tr><td>9</td><td>Reporting Framework</td><td>Cấu trúc báo cáo FTP</td><td><span class="badge done">Hoàn thành</span></td><td>3 báo cáo chính + SP con</td></tr>
-                    <tr><td>10</td><td>MM Pooling Decision</td><td>Quy tắc gộp Money Market</td><td><span class="badge done">Hoàn thành</span></td><td>Chờ ALCO</td></tr>
-                    <tr><td>11</td><td>FFI Repricing Logic</td><td>Lãi suất điều chỉnh FFI</td><td><span class="badge done">Hoàn thànhh</span></td><td>Chờ Treasury input</td></tr>
-                    <tr><td>12</td><td>BẢNG ĐO LƯỜNG</td><td>Thiết lập mục tiêu đo lường</td><td><span class="badge done">Hoàn thành</span></td><td>Chờ Ban Điều hành</td></tr>
-                    <tr><td>13</td><td>QUẢN TRỊ VÀ VẬN HÀNH</td><td>Phạm vi xử lý CASA trong FTP</td><td><span class="badge pending">Gần hoàn thiện</span></td><td>Cần làm rõ với Funding</td></tr>
-                    <tr><td>14</td><td>KIỂM SOÁT, KIỂM ĐỊNH VÀ THI HÀNH</td><td>Chuẩn hóa đơn vị lãi suất CMS/LMS</td><td><span class="badge pending">Gần hoàn thiệng</span></td><td>CMS: /100, LMS: decimal</td></tr>
-                    <tr><td>15</td><td>Phụ lục Tham số</td><td>Xử lý nợ xấu trong FTP</td><td><span class="badge pending">Gần hoàn thiện</span></td><td>Cần DPD/NPL classification từ CMS</td></tr>
-                    <tr><td>16</td><td>Phụ lục Tham số</td><td>Tích hợp trích lập dự phòng</td><td><span class="badge pending">Gần hoàn thiện</span></td><td>Chờ Risk cung cấp tỷ lệ</td></tr>
-                    <tr><td>17</td><td>Floating Rate Handling</td><td>Xử lý lãi suất thả nổi</td><td><span class="badge in-progress">Roadmap v2</span></td><td>Phiên bản sau</td></tr>
-                    <tr><td>18</td><td>Prepayment Modeling</td><td>Mô hình trả trước hạn</td><td><span class="badge in-progress">Roadmap v2</span></td><td>Phiên bản sau</td></tr>
-                    <tr><td>19</td><td>Behavioral Maturity</td><td>Kỳ hạn hành vi vs hợp đồng</td><td><span class="badge in-progress">Roadmap v2</span></td><td>Phiên bản sau</td></tr>
+                    <tr><td>1</td><td>Nguyên tắc xác định</td><td>Nguyên tắc Mapping Nguồn - Sử dụng Nguồn; Thứ tự ưu tiên Nguồn vốn</td><td><span class="badge done">Hoàn thành</span></td><td>—</td></tr>
+                    <tr><td>2</td><td>Cơ sở định giá</td><td>Kỳ hạn chuẩn; Đường cong Lãi suất tham chiếu; Tham số FTP</td><td><span class="badge done">Hoàn thành</span></td><td>—</td></tr>
+                    <tr><td>3</td><td>Định giá LSMV</td><td>Xác định và phân loại nguồn vốn;</td><td><span class="badge pending">Xin ý kiến</span></td><td>Cần finalize lãi suất MM có đưa vào pool chung?</td></tr>
+                    <tr><td>4</td><td>Định giá LSMV</td><td>Quy đổi kỳ hạn chuẩn;</td><td><span class="badge done">Hoàn thành</span></td><td>—</td></tr>
+                    <tr><td>5</td><td>Định giá LSMV</td><td>Tính LSMV TT1 & TT2;</td><td><span class="badge pending">Xin ý kiến</span></td><td>Cần finalize LSMV của pool chung có bao gồm TT2</td></tr>
+                    <tr><td>6</td><td>Định giá LSMV</td><td>LSMV base</td><td><span class="badge done">Hoàn thành</span></td><td>—</td></tr>
+                    <tr><td>7</td><td>Định giá LSBV</td><td>Xác định LSBV base 12M</td><td><span class="badge pending">Xin ý kiến</span></td><td>Cần finalize Chi phí tư vấn SME đưa vào LSBV</td></tr>
+                    <tr><td>8</td><td>Định giá LSBV</td><td>Xác định LSBV dài hạn > 12M</td><td><span class="badge done">Hoàn thành</span></td><td>—</td></tr>
+                    <tr><td>9</td><td>Định giá LSBV</td><td>Xác định LSBV ngắn hạn (≤ 12M)</td><td><span class="badge pending">Xin ý kiến</span></td><td>Cần finalize sử dụng kỳ hạn 4m hay 6m làm kỳ hạn đại diện trong việc nội suy đường cong LSBV</td></tr>
+                    <tr><td>10</td><td>Định giá LSBV</td><td>Ma trận LSBV cho kỳ hạn, sản phẩm</td><td><span class="badge in-progress">Đang thực hiện</span></td><td>—</td></tr>
                 </tbody>
             </table>
         </div>
